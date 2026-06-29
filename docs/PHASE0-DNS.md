@@ -1,4 +1,12 @@
-# Phase 0 — Installer Kibo Anime sur la PX3 Pro via la méthode DNS
+> ⛔ **NE S'APPLIQUE PAS AU PX3 PRO.** Vérifié sur firmware `V1000.09.02D.P0926` :
+> les projecteurs Hisense ignorent l'installation par launcher (`Hisense_installApp`
+> retourne un succès sans créer d'icône). **Utilisez la méthode SIGNET** décrite dans
+> le `README.md`. Ce document est conservé à titre de référence pour d'autres modèles
+> Vidaa (TV classiques) où le launcher fonctionne encore.
+
+---
+
+# Phase 0 — Installer Kibo Anime via la méthode DNS (autres modèles Vidaa)
 
 Guide pas-à-pas pour installer l'app sur Vidaa U9 en détournant `vidaahub.com`
 vers un serveur local (méthode dérivée de `Stremio/stremio-hisense-install` et

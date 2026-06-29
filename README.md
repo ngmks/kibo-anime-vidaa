@@ -19,7 +19,27 @@ python3 tools/dev-server.py        # écoute sur 0.0.0.0:8080
 Navigation au clavier (mappée comme la télécommande) : **flèches** = D-pad,
 **Entrée** = OK, **Retour/Échap** = BACK, **Espace** = play/pause.
 
-## Phase 0 — Validation sur la PX3 Pro (à faire en premier)
+## 🚀 Installation sur la PX3 Pro (méthode SIGNET — la seule qui marche)
+
+> **App en ligne : https://ngmks.github.io/kibo-anime-vidaa/**
+
+Les projecteurs Hisense (PX3-Pro, M2 Pro, C2…) **ignorent l'installation par launcher**
+(`Hisense_installApp` retourne un succès mais aucune icône n'apparaît — limite firmware,
+confirmée sur firmware `V1000.09.02D.P0926`). `hisense://debug`, le code DevKit
+`27753790` et la séquence menu développeur sont également **inopérants** sur cet appareil.
+
+**La voie qui fonctionne = un favori dans le navigateur :**
+
+1. Sur la TV : **Accueil → Apps → Navigateur Internet** (« Toutes les apps » s'il est masqué).
+2. Aller sur **`https://ngmks.github.io/kibo-anime-vidaa/`**.
+3. **Ajouter aux favoris / signets**.
+4. Lancer l'app depuis les favoris (le Service Worker la met en cache → démarrage rapide).
+5. Quitter : touche **Retour** depuis l'accueil (appelle `Hisense_Exit()`).
+
+> ⚠️ `docs/PHASE0-DNS.md` (méthode DNS/launcher) est **conservé pour référence mais ne
+> s'applique PAS au PX3 Pro** (launcher bloqué). Utilisez la méthode signet ci-dessus.
+
+## Phase 0 — Relevé sur la TV (codes touches + moteur)
 
 Objectif : confirmer (a) une voie d'installation, (b) la lecture HLS, (c) les codes
 touches réels de la télécommande.
