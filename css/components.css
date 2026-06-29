@@ -1,0 +1,170 @@
+/* ============================================================
+   components.css — barre de nav, rails, cartes, focus, vues, lecteur
+   ============================================================ */
+
+/* ---------- Focus D-pad ----------
+   Toute la navigation repose sur la classe .focused posée par spatial-nav.js.
+   On anime UNIQUEMENT transform/opacity/box-shadow GPU pour rester fluide. */
+[data-focusable] {
+  outline: none;
+  transition: transform var(--t-fast) ease, box-shadow var(--t-fast) ease;
+}
+.focused {
+  transform: scale(1.06);
+  box-shadow: 0 0 0 0.4rem var(--focus-ring), 0 1.5rem 3rem rgba(0,0,0,0.6);
+  z-index: 5;
+}
+
+/* ---------- En-tête / navigation principale ---------- */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  margin-bottom: 3rem;
+  padding-right: var(--safe-x);
+}
+.brand { font-size: 3.2rem; font-weight: 800; letter-spacing: 0.2rem; }
+.brand span { color: var(--accent); }
+.nav { display: flex; gap: 1.5rem; margin-left: 2rem; }
+.nav-item {
+  font-size: 2rem;
+  color: var(--text-dim);
+  padding: 0.8rem 1.8rem;
+  border-radius: var(--radius);
+}
+.nav-item.active { color: var(--text); }
+.nav-item.focused { background: var(--accent); color: #fff; }
+
+/* ---------- Rails (rangées horizontales) ---------- */
+.rail { margin-bottom: var(--rail-gap); }
+.rail-title { font-size: 2.2rem; font-weight: 700; margin-bottom: 1.2rem; }
+.rail-track {
+  display: flex;
+  gap: 1.6rem;
+  /* Le défilement se fait par transform (scrollLeft sur TV est saccadé) */
+  transition: transform var(--t-med) ease;
+  will-change: transform;
+}
+
+/* ---------- Carte anime ---------- */
+.card {
+  flex: 0 0 auto;
+  width: 22rem;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--bg-card);
+}
+.card-poster {
+  width: 22rem;
+  height: 31rem;
+  object-fit: cover;
+  display: block;
+  background: var(--bg-elevated);
+}
+.card-title {
+  font-size: 1.7rem;
+  padding: 1rem 1.2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Grille (recherche / bibliothèque) */
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.6rem 1.6rem;
+  overflow: hidden;
+  max-height: 78vh;
+}
+
+/* ---------- Vue série (fiche détail) ---------- */
+.series {
+  display: flex;
+  gap: 4rem;
+  height: 100%;
+}
+.series-hero {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: blur(1.2rem) brightness(0.35);
+  z-index: -1;
+}
+.series-poster { width: 32rem; height: 45rem; border-radius: var(--radius); object-fit: cover; }
+.series-info { max-width: 90rem; }
+.series-title { font-size: 4rem; font-weight: 800; margin-bottom: 1.5rem; }
+.series-meta { color: var(--text-dim); font-size: 1.8rem; margin-bottom: 2rem; }
+.series-synopsis {
+  font-size: 1.9rem; line-height: 1.5; color: var(--text);
+  max-height: 18rem; overflow: hidden; margin-bottom: 2.5rem;
+}
+.series-actions { display: flex; gap: 1.5rem; margin-bottom: 2.5rem; }
+
+/* Liste des épisodes */
+.episodes { display: flex; flex-wrap: wrap; gap: 1.2rem; overflow: hidden; max-height: 22rem; }
+.episode {
+  width: 9rem; height: 6rem;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg-card); border-radius: 0.8rem;
+  font-size: 2rem; font-weight: 700;
+}
+.episode.watched { color: var(--accent-soft); }
+
+/* ---------- Boutons ---------- */
+.btn {
+  display: inline-flex; align-items: center; gap: 0.8rem;
+  font-size: 2rem; font-weight: 600;
+  padding: 1.2rem 2.6rem;
+  border-radius: var(--radius);
+  background: var(--bg-card); color: var(--text);
+  border: none;
+}
+.btn-primary { background: var(--accent); color: #fff; }
+
+/* ---------- Recherche : clavier virtuel ---------- */
+.search { display: flex; flex-direction: column; gap: 2rem; height: 100%; }
+.search-box {
+  font-size: 3rem; min-height: 5rem;
+  border-bottom: 0.3rem solid var(--accent);
+  padding-bottom: 1rem; min-width: 60rem; color: var(--text);
+}
+.search-box .caret { color: var(--accent); animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.keyboard { display: flex; flex-wrap: wrap; gap: 0.8rem; max-width: 90rem; }
+.key {
+  width: 6.5rem; height: 6.5rem;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg-card); border-radius: 0.8rem; font-size: 2.4rem;
+}
+.key.wide { width: 14rem; }
+
+/* ---------- États vides / chargement ---------- */
+.placeholder { color: var(--text-dim); font-size: 2.2rem; padding: 4rem; }
+.skeleton { background: linear-gradient(90deg,#1d1828,#231d31,#1d1828); animation: shimmer 1.2s infinite; }
+@keyframes shimmer { 0%{opacity:.6} 50%{opacity:1} 100%{opacity:.6} }
+
+/* ============================================================
+   Lecteur vidéo
+   ============================================================ */
+#player-layer { position: fixed; inset: 0; background: #000; z-index: 50; }
+#video { width: 100%; height: 100%; object-fit: contain; background: #000; }
+
+#player-ui {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: var(--safe-y) var(--safe-x);
+  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 40%);
+  opacity: 0; transition: opacity var(--t-med) ease;
+}
+#player-ui.show { opacity: 1; }
+.pl-title { font-size: 2.8rem; font-weight: 700; margin-bottom: 1.5rem; }
+.pl-bar { height: 0.6rem; background: rgba(255,255,255,0.25); border-radius: 1rem; overflow: hidden; }
+.pl-progress { height: 100%; width: 0; background: var(--accent); }
+.pl-time { font-size: 1.8rem; color: var(--text-dim); margin-top: 1rem; }
+.pl-spinner {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  width: 8rem; height: 8rem; border: 0.6rem solid rgba(255,255,255,0.15);
+  border-top-color: var(--accent); border-radius: 50%; animation: spin 0.9s linear infinite;
+}

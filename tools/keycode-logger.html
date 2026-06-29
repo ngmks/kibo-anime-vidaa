@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1920, height=1080, initial-scale=1" />
+<title>Kibo — Phase 0 (codes touches + test HLS)</title>
+<style>
+  html,body{margin:0;height:100%;background:#0d0b14;color:#f2eefb;
+    font-family:system-ui,sans-serif;overflow:hidden}
+  .wrap{display:flex;height:100%}
+  .col{flex:1;padding:4vh 3vw;box-sizing:border-box}
+  h1{font-size:3vh;color:#9d84ff;margin:0 0 2vh}
+  #last{font-size:6vh;font-weight:800;margin:2vh 0}
+  #log{font-size:2.2vh;line-height:1.6;height:60vh;overflow:auto;
+    background:#17131f;border-radius:1vh;padding:2vh}
+  .k{color:#7c5cff;font-weight:700}
+  video{width:100%;height:50vh;background:#000;border-radius:1vh}
+  .status{font-size:2.2vh;margin-top:2vh;color:#9b93b0}
+  .ok{color:#6ee7a0}.err{color:#ff5c7c}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <!-- Colonne 1 : relevé des codes touches de la télécommande -->
+  <div class="col">
+    <h1>1) Appuyez sur les touches de la télécommande</h1>
+    <div>Dernière touche :</div>
+    <div id="last">—</div>
+    <div id="log"></div>
+  </div>
+
+  <!-- Colonne 2 : test de lecture HLS + sonde moteur -->
+  <div class="col">
+    <h1>2) Test de lecture HLS</h1>
+    <video id="v" controls autoplay muted playsinline></video>
+    <div id="hlsStatus" class="status">Initialisation…</div>
+    <h1 style="margin-top:3vh">3) Moteur (compatibilité JS)</h1>
+    <div id="engine" class="status"></div>
+  </div>
+</div>
+
+<script src="../vendor/hls.min.js"></script>
+<script>
+  // --- Relevé des codes touches ---
+  var last = document.getElementById('last');
+  var log = document.getElementById('log');
+  document.addEventListener('keydown', function (e) {
+    var line = 'keyCode=<span class="k">' + e.keyCode + '</span>  key="' + e.key +
+               '"  code="' + e.code + '"';
+    last.innerHTML = line;
+    var div = document.createElement('div');
+    div.innerHTML = line;
+    log.insertBefore(div, log.firstChild);
+    e.preventDefault();
+  });
+
+  // --- Test HLS ---
+  var v = document.getElementById('v');
+  var st = document.getElementById('hlsStatus');
+  var URL_HLS = 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8';
+
+  function ok(m){ st.className='status ok'; st.textContent='✓ ' + m; }
+  function err(m){ st.className='status err'; st.textContent='✗ ' + m; }
+
+  if (window.Hls && window.Hls.isSupported()) {
+    st.textContent = 'HLS.js supporté — chargement du flux…';
+    var hls = new Hls();
+    hls.loadSource(URL_HLS);
+    hls.attachMedia(v);
+    hls.on(Hls.Events.MANIFEST_PARSED, function(){ ok('Manifest HLS chargé (HLS.js). Lecture en cours.'); });
+    hls.on(Hls.Events.ERROR, function(_, d){ if(d.fatal) err('Erreur HLS.js : ' + d.type + '/' + d.details); });
+  } else if (v.canPlayType('application/vnd.apple.mpegurl')) {
+    st.textContent = 'HLS natif détecté — chargement…';
+    v.src = URL_HLS;
+    v.addEventListener('loadedmetadata', function(){ ok('Lecture HLS native OK.'); });
+    v.addEventListener('error', function(){ err('Erreur lecture HLS native.'); });
+  } else {
+    err('Aucun support HLS détecté sur ce moteur.');
+  }
+
+  // --- Sonde moteur : révèle la version du Chromium embarqué de Vidaa ---
+  // L'app utilise ?. ?? import() modules ES (Chromium 80+, 2020). Si une de ces
+  // sondes échoue, l'app ne tournera pas telle quelle sur ce firmware.
+  (function () {
+    var probes = {
+      'Optional chaining (?.)':  (function(){ try { return eval('({})?.x') === undefined; } catch(e){ return false; } })(),
+      'Nullish (??)':            (function(){ try { return eval('null ?? 1') === 1; } catch(e){ return false; } })(),
+      'Modules ES (import)':     (typeof Symbol !== 'undefined' && 'noModule' in document.createElement('script')),
+      'Promise.allSettled':      (typeof Promise.allSettled === 'function'),
+      'fetch':                   (typeof fetch === 'function'),
+      'localStorage':            (function(){ try { return !!window.localStorage; } catch(e){ return false; } })(),
+      'MSE (HLS.js)':            (typeof window.MediaSource !== 'undefined'),
+      'EME/Widevine (DRM)':      (typeof navigator.requestMediaKeySystemAccess === 'function')
+    };
+    var html = '<b>UA:</b> ' + navigator.userAgent + '<br><br>';
+    for (var k in probes) html += (probes[k] ? '✓ ' : '✗ ') + k + '<br>';
+    document.getElementById('engine').innerHTML = html;
+  })();
+</script>
+</body>
+</html>

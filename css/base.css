@@ -1,0 +1,96 @@
+/* ============================================================
+   base.css — reset, variables, échelle et zone sûre (overscan)
+   Cible : Vidaa OS (Chromium embarqué), rendu 1920x1080.
+   ============================================================ */
+
+:root {
+  /* Palette inspirée de Kibo : fond sombre violacé + accent violet */
+  --bg:            #0d0b14;
+  --bg-elevated:   #17131f;
+  --bg-card:       #1d1828;
+  --text:          #f2eefb;
+  --text-dim:      #9b93b0;
+  --accent:        #7c5cff;
+  --accent-soft:   #9d84ff;
+  --danger:        #ff5c7c;
+  --focus-ring:    #ffffff;
+
+  /* Échelle : on raisonne en rem. 1rem = 1% de la hauteur 1080p => 10.8px.
+     Cela rend toute l'UI proportionnelle si la résolution change. */
+  --radius: 1.1rem;
+  --rail-gap: 2rem;
+
+  /* Zone sûre contre l'overscan TV (~5% de chaque bord) */
+  --safe-x: 6rem;
+  --safe-y: 5rem;
+
+  /* Durées d'animation courtes : la TV est sensible au jank */
+  --t-fast: 120ms;
+  --t-med: 220ms;
+}
+
+html {
+  /* 1080 / 100 = 10.8px par rem. Le moteur recalcule si la fenêtre diffère. */
+  font-size: calc(100vh / 100);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;            /* pas de scrollbar : navigation au D-pad */
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Segoe UI", "Noto Sans", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  /* Désactive la sélection/surbrillance tactile héritée */
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: none;                /* pas de curseur sur TV */
+}
+
+img { -webkit-user-drag: none; }
+
+.hidden { display: none !important; }
+
+/* Conteneur de vue : marges = zone sûre */
+#app {
+  position: absolute;
+  inset: 0;
+  padding: var(--safe-y) 0 var(--safe-y) var(--safe-x);
+}
+
+/* ---- Splash ---- */
+#splash {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3rem;
+  background: var(--bg);
+  z-index: 100;
+  transition: opacity var(--t-med) ease;
+}
+#splash.fade { opacity: 0; pointer-events: none; }
+.splash-logo {
+  font-size: 7rem;
+  font-weight: 800;
+  letter-spacing: 0.3rem;
+}
+.splash-logo span { color: var(--accent); }
+.splash-spinner {
+  width: 5rem; height: 5rem;
+  border: 0.5rem solid rgba(255,255,255,0.12);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Réduction de mouvement si le système le demande */
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}

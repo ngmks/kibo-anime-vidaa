@@ -1,0 +1,19 @@
+{
+  "name": "Kibo Anime",
+  "short_name": "Kibo",
+  "description": "Catalogue et lecteur d'anime pour Vidaa OS (HTML5 TV app).",
+  "version": "0.1.0",
+  "start_url": "index.html",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#0d0b14",
+  "theme_color": "#7c5cff",
+  "icons": [
+    { "src": "assets/icon-small.png", "sizes": "256x256", "type": "image/png" },
+    { "src": "assets/icon-large.png", "sizes": "512x512", "type": "image/png" }
+  ],
+  "vidaa": {
+    "resolution": "1920x1080",
+    "engine": "chromium"
+  }
+}

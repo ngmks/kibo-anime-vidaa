@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <!-- Vidaa rend en 1920x1080 ; on fige le viewport logique -->
+  <meta name="viewport" content="width=1920, height=1080, initial-scale=1, user-scalable=no" />
+  <title>Kibo Anime — Vidaa</title>
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/components.css" />
+</head>
+<body>
+  <!-- Écran de démarrage -->
+  <div id="splash">
+    <div class="splash-logo">KIBO<span>ANIME</span></div>
+    <div class="splash-spinner" aria-hidden="true"></div>
+  </div>
+
+  <!-- Conteneur principal des vues (rempli par le routeur) -->
+  <main id="app" aria-live="polite"></main>
+
+  <!-- Lecteur vidéo global, réutilisé entre les sessions de lecture -->
+  <div id="player-layer" class="hidden">
+    <video id="video" playsinline></video>
+    <div id="player-ui"></div>
+  </div>
+
+  <!-- HLS.js : lecture HLS dans le Chromium de Vidaa -->
+  <script src="vendor/hls.min.js"></script>
+  <!-- App (modules ES natifs) -->
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
